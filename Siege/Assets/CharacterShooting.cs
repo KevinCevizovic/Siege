@@ -53,7 +53,7 @@ public class CharacterShooting : MonoBehaviour
 
     IEnumerator Shoot()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.5f);
         shot = true;
         GameObject cannonBall1 = Instantiate(cannonBall, firePoint.transform.position, firePoint.transform.rotation);
         cannonBall1.GetComponent<Rigidbody>().velocity = firePoint.transform.forward * firePower;
