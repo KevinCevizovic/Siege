@@ -674,6 +674,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4990721327359002523}
   - component: {fileID: 7055910425881315464}
+  - component: {fileID: 8619617699751477680}
   m_Layer: 0
   m_Name: katapult
   m_TagString: Untagged
@@ -732,6 +733,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 100
+--- !u!114 &8619617699751477680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3050963933158890248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ba6100f2d42e6c488370dc14743024f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTime: 0
+  maxPower: 0
+  fireSpeed: 0
+  shot: 0
+  firePoint: {fileID: 0}
+  cannonBall: {fileID: 0}
 --- !u!1 &4278352757599806151
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,9 +15,12 @@ public class CharacterShooting : MonoBehaviour
     [SerializeField]
     GameObject firePoint, cannonBall;
 
+    LineRenderer lr;
+
     private void Start()
     {
         anim = GetComponentInChildren<Animator>();
+        lr = GetComponent<LineRenderer>();
     }
 
     private void Update()
@@ -25,6 +28,7 @@ public class CharacterShooting : MonoBehaviour
         if (Input.GetButton("Fire1"))
         {
             firePower = Mathf.Lerp(firePower, maxPower, Time.deltaTime * maxTime);
+            UpdateTrajectory(firePoint.transform.position, firePoint.transform.forward, firePower * Mathf.PI, 0.07f, 45.0f);
         }
         else
             shot = false;
@@ -42,7 +46,7 @@ public class CharacterShooting : MonoBehaviour
                 StartCoroutine(Shoot());
             }
         }
-
+        
         if (!shot)
             anim.SetBool("Shoot", false);
         if (shot)
@@ -59,4 +63,54 @@ public class CharacterShooting : MonoBehaviour
         cannonBall1.GetComponent<Rigidbody>().velocity = firePoint.transform.forward * firePower;
         firePower = 1f;
     }
+
+    void UpdateTrajectory(Vector3 startPos, Vector3 direction, float speed, float timePerSegmentInSeconds, float maxTravelDistance)
+    {
+        var positions = new List<Vector3>();
+        var lastPos = startPos;
+        var currentPos = firePoint.transform.position;
+        positions.Add(startPos);
+
+        var traveledDistance = 0.0f;
+        while (traveledDistance < maxTravelDistance)
+        {
+            traveledDistance += speed * timePerSegmentInSeconds;
+            var hasHitSomething = TravelTrajectorySegment(currentPos, direction, speed, timePerSegmentInSeconds, positions);
+            if (hasHitSomething)
+            {
+                break;
+            }
+            lastPos = currentPos;
+            currentPos = positions[positions.Count - 1];
+            direction = currentPos - lastPos;
+            direction.Normalize();
+        }
+
+        BuildTrajectoryLine(positions);
+    }
+
+    bool TravelTrajectorySegment(Vector3 startPos, Vector3 direction, float speed, float timePerSegmentInSeconds, List<Vector3> positions)
+    {
+        var newPos = startPos + direction * speed * timePerSegmentInSeconds + Physics.gravity * timePerSegmentInSeconds;
+
+        RaycastHit hitInfo;
+        var hasHitSomething = Physics.Linecast(startPos, newPos, out hitInfo);
+        if (hasHitSomething)
+        {
+            newPos = hitInfo.point;
+        }
+        positions.Add(newPos);
+
+        return hasHitSomething;
+    }
+
+    void BuildTrajectoryLine(List<Vector3> positions)
+    {
+        lr.SetVertexCount(positions.Count);
+        for (var i = 0; i < positions.Count; ++i)
+        {
+            lr.SetPosition(i, positions[i]);
+        }
+    }
+
 }
